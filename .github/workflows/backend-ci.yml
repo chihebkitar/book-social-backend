@@ -33,36 +33,26 @@ jobs:
       - name: Test
         run: mvn test
 
+      # OPTIONAL: Security scanning with OWASP Dependency Check
       - name: OWASP Dependency Check
         uses: jeremylong/DependencyCheck@v6.5.0
         with:
-          project: "Book Social Backend"
-          path: "."
+         project: "Book Social Backend"
+         path: "."
 
-      - name: Package Dependency Check Reports
-        run: |
-          cd cli/target
-          zip -r dependency-check-${{ env.VERSION }}-release.zip dependency-check-report
-        env:
-          VERSION: 1.0.0  # Define the version appropriately
-
+      # OPTIONAL: CodeQL scanning
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
-          languages: 'java'
-
+         languages: 'java'
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
 
-      - name: Build Docker Image
-        run: |
-          docker build --build-arg VERSION=${{ env.VERSION }} -t your-image-name:tag .
-        env:
-          VERSION: 1.0.0  # Ensure consistency
 
       - name: Deploy to Railway
         uses: bervProject/railway-deploy@main
         with:
           railwayToken: ${{ secrets.RAILWAY_TOKEN }}
           projectId: ${{ secrets.RAILWAY_PROJECT_ID }}
-          # Additional configurations as needed
+          # The service name you gave for your deployment on Railway
+          # If you used Docker, you can specify Docker build here or if you used the JAR approach, it can be auto-deployed
