@@ -108,7 +108,7 @@
 							<goal>check</goal>
 						</goals>
 						<configuration>
-							<format>HTML,XML,ALL</format> <!-- Ensure ALL or ZIP is included if supported -->
+							<format>HTML,XML</format> <!-- Ensure ALL or ZIP is included if supported -->
 							<outputDirectory>${project.build.directory}/cli/target</outputDirectory>
 							<dataDirectory>${project.build.directory}/dependency-check-data</dataDirectory>
 							<suppressionFiles>
