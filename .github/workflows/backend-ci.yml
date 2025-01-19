@@ -10,31 +10,6 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:13
-        env:
-          POSTGRES_USER: username
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: book_social_network
-        ports:
-          - 5432
-        options: >-
-          --health-cmd="pg_isready -U username" 
-          --health-interval=10s 
-          --health-timeout=5s 
-          --health-retries=5
-      mail-dev:
-        image: maildev/maildev
-        ports:
-          - 1080
-          - 1025
-
-    env:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/book_social_network
-      SPRING_DATASOURCE_USERNAME: username
-      SPRING_DATASOURCE_PASSWORD: password
-
     steps:
       - name: Check out the repository
         uses: actions/checkout@v3
@@ -52,29 +27,24 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
 
-      - name: Wait for PostgreSQL to be ready
-        run: |
-          for i in {1..30}; do
-            nc -z postgres 5432 && echo "PostgreSQL is up" && exit 0
-            echo "Waiting for PostgreSQL..."
-            sleep 1
-          done
-          echo "PostgreSQL did not start in time" && exit 1
-
       - name: Build with Maven
         run: mvn clean install
 
-      - name: Run Dependency Check
-        run: mvn org.owasp:dependency-check-maven:check
-
       - name: Test
         run: mvn test
+
+      # OPTIONAL: Security scanning with OWASP Dependency Check
+      - name: OWASP Dependency Check
+        uses: jeremylong/DependencyCheck@v6.5.0
+        with:
+         project: "Book Social Backend"
+         path: "."
 
       # OPTIONAL: CodeQL scanning
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
-          languages: 'java'
+         languages: 'java'
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
 
@@ -83,3 +53,5 @@ jobs:
         with:
           railwayToken: ${{ secrets.RAILWAY_TOKEN }}
           projectId: ${{ secrets.RAILWAY_PROJECT_ID }}
+          # The service name you gave for your deployment on Railway
+          # If you used Docker, you can specify Docker build here or if you used the JAR approach, it can be auto-deployed
