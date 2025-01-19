@@ -1,0 +1,57 @@
+name: Backend CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+
+      - name: Build with Maven
+        run: mvn clean install
+
+      - name: Test
+        run: mvn test
+
+      # OPTIONAL: Security scanning with OWASP Dependency Check
+      - name: OWASP Dependency Check
+        uses: jeremylong/DependencyCheck@v6.5.0
+        with:
+         project: "Book Social Backend"
+         path: "."
+
+      # OPTIONAL: CodeQL scanning
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+         languages: 'java'
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+
+      - name: Deploy to Railway
+        uses: railwayapp/railway-github-actions@v1
+        with:
+          railwayToken: ${{ secrets.RAILWAY_TOKEN }}
+          projectId: ${{ secrets.RAILWAY_PROJECT_ID }}
+          # The service name you gave for your deployment on Railway
+          # If you used Docker, you can specify Docker build here or if you used the JAR approach, it can be auto-deployed
