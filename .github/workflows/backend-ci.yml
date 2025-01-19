@@ -33,21 +33,15 @@ jobs:
       - name: Test
         run: mvn test
 
-      - name: Extract Project Version
-        run: echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+      - name: Generate Dependency Check Report
+        run: mvn org.owasp:dependency-check-maven:check
 
-      - name: OWASP Dependency Check
-        uses: jeremylong/DependencyCheck@v6.5.0
+      - name: Upload Dependency Check Report
+        uses: actions/upload-artifact@v3
         with:
-          project: "Book Social Backend"
-          path: "."
+          name: dependency-check-report
+          path: target/cli/target/dependency-check-report.html
 
-      - name: Package Dependency Check Reports
-        run: |
-          mkdir -p cli/target
-          zip -r cli/target/dependency-check-${{ env.VERSION }}-release.zip cli/target/dependency-check-report
-        env:
-          VERSION: ${{ env.VERSION }}
 
       # OPTIONAL: CodeQL scanning
       - name: Initialize CodeQL
