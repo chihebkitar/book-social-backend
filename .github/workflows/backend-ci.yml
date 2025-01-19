@@ -30,21 +30,17 @@ jobs:
       - name: Build with Maven
         run: mvn clean install
 
+      - name: Run Dependency Check
+        run: mvn org.owasp:dependency-check-maven:check
+
       - name: Test
         run: mvn test
-
-      # OPTIONAL: Security scanning with OWASP Dependency Check
-      - name: OWASP Dependency Check
-        uses: jeremylong/DependencyCheck@v6.5.0
-        with:
-         project: "Book Social Backend"
-         path: "."
 
       # OPTIONAL: CodeQL scanning
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
-         languages: 'java'
+          languages: 'java'
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
 
