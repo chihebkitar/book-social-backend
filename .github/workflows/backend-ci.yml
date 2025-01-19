@@ -49,7 +49,7 @@ jobs:
         uses: github/codeql-action/analyze@v2
 
       - name: Deploy to Railway
-        uses: railwayapp/actions/deploy@v1
+        uses: bervProject/railway-deploy@main
         with:
           railwayToken: ${{ secrets.RAILWAY_TOKEN }}
           projectId: ${{ secrets.RAILWAY_PROJECT_ID }}
