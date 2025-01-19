@@ -107,6 +107,10 @@
 						<goals>
 							<goal>check</goal>
 						</goals>
+						<configuration>
+							<format>HTML,XML</format>
+							<outputDirectory>${project.build.directory}/dependency-check-report</outputDirectory>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
