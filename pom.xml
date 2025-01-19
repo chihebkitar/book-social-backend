@@ -108,8 +108,14 @@
 							<goal>check</goal>
 						</goals>
 						<configuration>
-							<format>HTML,XML</format>
-							<outputDirectory>${project.build.directory}/dependency-check-report</outputDirectory>
+							<format>HTML,XML,ALL</format> <!-- Ensure ALL or ZIP is included if supported -->
+							<outputDirectory>${project.build.directory}/cli/target</outputDirectory>
+							<dataDirectory>${project.build.directory}/dependency-check-data</dataDirectory>
+							<suppressionFiles>
+								<suppressionFile>dependency-check-suppressions.xml</suppressionFile>
+							</suppressionFiles>
+							<autoUpdate>true</autoUpdate>
+							<failOnError>true</failOnError>
 						</configuration>
 					</execution>
 				</executions>
