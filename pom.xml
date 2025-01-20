@@ -112,10 +112,7 @@
 							<format>HTML</format>
 							<!-- Output to a subdirectory in 'target' -->
 							<outputDirectory>${project.build.directory}/dependency-check-report</outputDirectory>
-							<!-- If you have a suppression file in the root -->
-							<suppressionFiles>
-								<suppressionFile>${project.basedir}/dependency-check-suppressions.xml</suppressionFile>
-							</suppressionFiles>
+							
 							<autoUpdate>true</autoUpdate>
 							<failOnError>true</failOnError>
 						</configuration>
