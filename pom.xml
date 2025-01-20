@@ -112,7 +112,7 @@
 							<format>HTML</format>
 							<!-- Output to a subdirectory in 'target' -->
 							<outputDirectory>${project.build.directory}/dependency-check-report</outputDirectory>
-							
+
 							<autoUpdate>true</autoUpdate>
 							<failOnError>true</failOnError>
 						</configuration>
